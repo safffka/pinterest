@@ -17,15 +17,24 @@ import settings
 STATE_PATH = os.path.join(os.path.dirname(__file__), "bot_state.json")
 
 
+def _resolve_state_path() -> str:
+    if os.path.isdir(STATE_PATH):
+        return os.path.join(STATE_PATH, "state.json")
+    return STATE_PATH
+
+
 def load_state() -> dict:
-    if not os.path.isfile(STATE_PATH):
+    state_path = _resolve_state_path()
+    if not os.path.isfile(state_path):
         return {"users": {}, "jobs": {}}
-    with open(STATE_PATH, "r", encoding="utf-8") as f:
+    with open(state_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def save_state(state: dict) -> None:
-    with open(STATE_PATH, "w", encoding="utf-8") as f:
+    state_path = _resolve_state_path()
+    os.makedirs(os.path.dirname(state_path) or ".", exist_ok=True)
+    with open(state_path, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2, ensure_ascii=True)
 
 
