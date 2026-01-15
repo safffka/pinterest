@@ -6,6 +6,7 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import accounts
@@ -80,8 +81,17 @@ def start_browser(account, headless=False):
 
     if headless:
         chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
 
-    return webdriver.Chrome(options=chrome_options)
+    chrome_bin = os.getenv("CHROME_BIN", "/usr/bin/chromium")
+    if os.path.exists(chrome_bin):
+        chrome_options.binary_location = chrome_bin
+
+    driver_path = os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromedriver")
+    service = Service(executable_path=driver_path) if os.path.exists(driver_path) else Service()
+
+    return webdriver.Chrome(service=service, options=chrome_options)
 
 
 # ======================================================
