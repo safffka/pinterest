@@ -238,7 +238,7 @@ def handle_pending(token: str, chat_id: int, user_id: str, text: str, state: dic
             return True
 
         if step == "choose_account":
-            if normalized == "cancel":
+            if normalized in ("cancel", "accounts", "settings", "prompts", "status", "help", "run"):
                 user_state["pending"] = None
                 save_state(state)
                 send_message(token, chat_id, "Отменено", reply_markup=main_menu_markup())
@@ -282,6 +282,23 @@ def handle_pending(token: str, chat_id: int, user_id: str, text: str, state: dic
             else:
                 send_message(token, chat_id, "Выбери Start или Cancel", reply_markup=run_confirm_markup())
             return True
+
+    elif action == "account_select":
+        if normalized == "back":
+            user_state["pending"] = None
+            save_state(state)
+            send_message(token, chat_id, "Аккаунты", reply_markup=accounts_menu_markup())
+            return True
+        alias = text.strip()
+        try:
+            accounts.get_account(alias)
+            user_state["account_alias"] = alias
+            user_state["pending"] = None
+            save_state(state)
+            send_message(token, chat_id, f"✅ Аккаунт выбран: {alias}", reply_markup=accounts_menu_markup())
+        except Exception as e:
+            send_message(token, chat_id, f"❌ {e}")
+        return True
 
     user_state["pending"] = None
     save_state(state)
@@ -339,7 +356,7 @@ def handle_command(token: str, chat_id: int, user_id: str, text: str):
                     "Выбери alias",
                     reply_markup=build_keyboard([[a] for a in names] + [["Back"]]),
                 )
-                user_state["pending"] = {"action": "run", "step": "choose_account"}
+                user_state["pending"] = {"action": "account_select"}
                 save_state(state)
             return
         alias = parts[1].strip()
