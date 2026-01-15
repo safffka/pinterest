@@ -1,0 +1,18 @@
+{
+  "default": "main",
+  "accounts": [
+    {
+      "alias": "main",
+      "email": "user@example.com",
+      "password": "PASSWORD",
+      "late_api_key": "LATE_API_KEY",
+      "late_base_url": "https://getlate.dev/api/v1",
+      "proxy": {
+        "host": "",
+        "port": "",
+        "user": "",
+        "pass": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "openai_image_prompt": "Generate a brand-new, original Pinterest-style fashion photograph.\nDo NOT copy the original; instead recreate the same vibe, aesthetic and composition.\n\nThe style description:\n{description}\n\nRules:\n- extremely aesthetic Pinterest quality\n- natural lighting, cinematic soft shadows\n- high fashion or lifestyle outfit depending on context\n- pastel tones if present in original\n- 1024x1024 square composition\n- must be visually appealing for Pinterest users\n",
+  "gemini_image_prompt": "Status",
+  "gemini_promo_prompt": "Create a Pinterest-style fashion image matching this aesthetic:\n\n{style_description}\n\nIMPORTANT:\n- DO NOT include any readable text in the image\n- Leave clean empty space at the TOP and BOTTOM for text overlay\n- editorial, elegant, not spammy\n- square format 1:1\n"
+}

@@ -1,0 +1,9 @@
+{
+  "telegram_bot_token": "",
+  "openai_api_key": "",
+  "gemini_api_key": "",
+  "fal_api_key": "",
+  "freepik_api_key": "",
+  "ffmpeg_font_path": "",
+  "allowed_user_ids": []
+}

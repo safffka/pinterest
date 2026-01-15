@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  pinterest-bot:
+    build: .
+    container_name: pinterest-bot
+    restart: unless-stopped
+    volumes:
+      - ./settings.json:/app/settings.json
+      - ./accounts.json:/app/accounts.json
+      - ./prompts.json:/app/prompts.json
+      - ./bot_state.json:/app/bot_state.json
+      - ./boards:/app/boards
+      - ./generated:/app/generated
+      - ./generated_gemini:/app/generated_gemini
+      - ./generated_videos:/app/generated_videos
+    environment:
+      - TZ=UTC
