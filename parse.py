@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 import accounts
 
 # ======================================================
@@ -91,7 +92,10 @@ def start_browser(account, headless=False):
     driver_path = os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromedriver")
     service = Service(executable_path=driver_path) if os.path.exists(driver_path) else Service()
 
-    return webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver.set_page_load_timeout(120)
+    driver.set_script_timeout(120)
+    return driver
 
 
 # ======================================================
@@ -272,11 +276,22 @@ def save_pin_to_board(driver, pin_url, board_name):
 # 5. ИЗВЛЕЧЕНИЕ ПИНОВ ИЗ ПОИСКА
 # ======================================================
 def collect_pin_urls(driver, query, limit=5):
-    driver.get(f"https://www.pinterest.com/search/pins/?q={query.replace(' ', '%20')}")
+    search_query = f"\"{query}\" aesthetic outfit"
+    driver.get(f"https://www.pinterest.com/search/pins/?q={search_query.replace(' ', '%20')}")
     time.sleep(4)
 
-    driver.execute_script("window.scrollTo(0,2000)")
-    time.sleep(2)
+    try:
+        WebDriverWait(driver, 12).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a[href*='/pin/']"))
+        )
+    except TimeoutException:
+        print("⚠ Пины не появились в ожидании, продолжаю")
+
+    try:
+        driver.execute_script("window.scrollTo(0,2000)")
+        time.sleep(2)
+    except TimeoutException:
+        print("⚠ Таймаут скрипта при скролле, продолжаю")
 
     urls = []
     for el in driver.find_elements(By.CSS_SELECTOR, "a[href*='/pin/']"):
